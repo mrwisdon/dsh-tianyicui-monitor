@@ -6,7 +6,7 @@ report it to the Lead instead of editing. These contracts are consumed by
 
 ## Package
 
-* Package name: `dsh-plugin-tianyicui-monitor`
+* Package name: `dsh-tianyicui-monitor`
 * `type: "module"`, ESM only.
 * Host half entry: `lib/index.js` — exports `apply(ctx)` and `inject`.
 * Client half entry: `lib/client.js` — built by `build/bundle.mjs` into the

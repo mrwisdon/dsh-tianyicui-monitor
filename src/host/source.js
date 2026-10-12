@@ -68,7 +68,7 @@ const RELEASE_PAGE_CAP = 6; // pinned at <= 6 by requirement
 const REQUEST_BUDGET = 8; // unauthenticated 60/h budget guard
 const REQUEST_BUDGET_AUTH = 16;
 
-const USER_AGENT = 'dsh-plugin-tianyicui-monitor';
+const USER_AGENT = 'dsh-tianyicui-monitor';
 /** Git author names that identify the maintainer, mirroring extract_dataset.py. */
 const TY_AUTHOR_NAMES = new Set([GITHUB_USER, 'Tianyi Cui']);
 

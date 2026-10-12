@@ -1,5 +1,5 @@
 /**
- * Browser half of dsh-plugin-tianyicui-monitor.
+ * Browser half of dsh-tianyicui-monitor.
  *
  * Registers ONE entry in the frame-wide `shell.overlay` slot, pinned to the
  * window's top-left corner. Opening it reveals:

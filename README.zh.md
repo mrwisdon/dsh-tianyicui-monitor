@@ -1,4 +1,4 @@
-# dsh-plugin-tianyicui-monitor
+# dsh-tianyicui-monitor
 
 在 DSH 侧栏加一个常驻入口（和「插件」「网易云音乐」「Qwen-Image 2.1」「MCP 连接器」并排的一行，
 带图标 + 文字标签），点开是一整块面板，回答一个问题：
@@ -379,13 +379,13 @@ package.json 里声明了客户端半边：
 ```yaml
 - insert:
     - id: tianyicui-monitor
-      name: dsh-plugin-tianyicui-monitor
+      name: dsh-tianyicui-monitor
 ```
 
 然后重启 DSH。`./sync.sh` 可以自动完成拷贝这一步：
 
 ```bash
-DSH_CANON_DIR="$HOME/dsh-plugins/dsh-plugin-tianyicui-monitor" \
+DSH_CANON_DIR="$HOME/dsh-plugins/dsh-tianyicui-monitor" \
 DSH_PROFILES="$HOME/.dsh/profiles/web" \
   ./sync.sh
 ```

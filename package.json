@@ -1,5 +1,5 @@
 {
-  "name": "dsh-plugin-tianyicui-monitor",
+  "name": "dsh-tianyicui-monitor",
   "version": "0.1.0",
   "private": true,
   "description": "DSH top-left entry showing tianyicui's GitHub commit activity (timeline + contribution heatmap) and a calibrated probability that a new DSH version ships within 72 hours.",

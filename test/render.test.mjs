@@ -152,7 +152,7 @@ function renderTree(node) {
 
 test('the bundle registers one loader row with a Module-tagged export', () => {
   const { loaderId, req } = loadBundle();
-  assert.equal(loaderId, 'dsh-plugin-tianyicui-monitor');
+  assert.equal(loaderId, 'dsh-tianyicui-monitor');
   const entry = req('src/client/index.js');
   assert.equal(typeof entry.apply, 'function');
   assert.deepEqual(entry.inject, ['slots']);

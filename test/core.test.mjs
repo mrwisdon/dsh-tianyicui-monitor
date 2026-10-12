@@ -287,14 +287,14 @@ function loadBundle() {
   fn(sandbox.window, sandbox.require);
   assert.equal(registrations.length, 1, 'the bundle must register exactly one loader entry');
   const reg = registrations[0];
-  assert.equal(reg.id, 'dsh-plugin-tianyicui-monitor');
+  assert.equal(reg.id, 'dsh-tianyicui-monitor');
   const exports = reg.factory(sandbox.require);
   return { exports, reg };
 }
 
 test('the built bundle registers one loader row and exports apply + inject', () => {
   const { exports, reg } = loadBundle();
-  assert.equal(reg.id, 'dsh-plugin-tianyicui-monitor');
+  assert.equal(reg.id, 'dsh-tianyicui-monitor');
   assert.equal(typeof exports.apply, 'function');
   assert.deepEqual(exports.inject, ['slots']);
   assert.equal(typeof exports.MonitorEntry, 'function');
@@ -440,7 +440,7 @@ test('apply survives a context with no locale service (regression)', () => {
 test('the package resolves from the web profile as a client plugin', async () => {
   // The exact seam DSH uses: package.json -> dsh.client.platform -> exports['./client'].
   const pkg = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8'));
-  assert.equal(pkg.name, 'dsh-plugin-tianyicui-monitor');
+  assert.equal(pkg.name, 'dsh-tianyicui-monitor');
   assert.equal(pkg.dsh.client.platform, 'web');
   assert.equal(pkg.exports['./client'].default, './lib/client.js');
   assert.equal(pkg.main, 'lib/index.js');

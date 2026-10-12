@@ -11,7 +11,7 @@
 #   DSH_PROFILES    colon-separated DSH profile directories to install into
 #
 # Windows users (paths as seen from WSL) example:
-#   DSH_CANON_DIR=/mnt/c/Users/me/dsh-plugins/dsh-plugin-tianyicui-monitor \
+#   DSH_CANON_DIR=/mnt/c/Users/me/dsh-plugins/dsh-tianyicui-monitor \
 #   DSH_PROFILES=/mnt/c/Users/me/.dsh/profiles/desktop \
 #     ./sync.sh
 #
@@ -21,7 +21,7 @@ set -euo pipefail
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Defaults: a single profile under $HOME, no Windows hop.
-DSH_CANON_DIR="${DSH_CANON_DIR:-$HOME/dsh-plugins/dsh-plugin-tianyicui-monitor}"
+DSH_CANON_DIR="${DSH_CANON_DIR:-$HOME/dsh-plugins/dsh-tianyicui-monitor}"
 DSH_PROFILES="${DSH_PROFILES:-$HOME/.dsh/profiles/web}"
 
 sync_into() {
@@ -39,7 +39,7 @@ IFS=':' read -r -a profiles <<< "$DSH_PROFILES"
 for p in "${profiles[@]}"; do
   [ -n "$p" ] || continue
   if [ -d "$p" ]; then
-    sync_into "$p/node_modules/dsh-plugin-tianyicui-monitor"
+    sync_into "$p/node_modules/dsh-tianyicui-monitor"
   else
     echo "  (skipped, profile not found: $p)"
   fi

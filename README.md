@@ -1,4 +1,4 @@
-# dsh-plugin-tianyicui-monitor
+# dsh-tianyicui-monitor
 
 [![tests](https://img.shields.io/badge/tests-109%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -160,13 +160,13 @@ Place the package under your profile's `node_modules`, then append a loader entr
 ```yaml
 - insert:
     - id: tianyicui-monitor
-      name: dsh-plugin-tianyicui-monitor
+      name: dsh-tianyicui-monitor
 ```
 
 Restart DSH. `sync.sh` automates the copy step:
 
 ```bash
-DSH_CANON_DIR="$HOME/dsh-plugins/dsh-plugin-tianyicui-monitor" \
+DSH_CANON_DIR="$HOME/dsh-plugins/dsh-tianyicui-monitor" \
 DSH_PROFILES="$HOME/.dsh/profiles/web" \
   ./sync.sh
 ```
