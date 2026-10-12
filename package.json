@@ -1,0 +1,39 @@
+{
+  "name": "dsh-plugin-tianyicui-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DSH top-left entry showing tianyicui's GitHub commit activity (timeline + contribution heatmap) and a calibrated probability that a new DSH version ships within 72 hours.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer"
+      ]
+    }
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "src/host/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node build/bundle.mjs",
+    "test": "node --test test/*.test.mjs",
+    "data": "python3 build/extract_dataset.py && node build/fit_model.mjs 72 && node build/bundle.mjs",
+    "contributions": "NODE_EXTRA_CA_CERTS=$PWD/build/certs/chain1.pem node build/scan_contributions.mjs",
+    "repos": "node build/scan_repos.mjs"
+  },
+  "license": "MIT"
+}

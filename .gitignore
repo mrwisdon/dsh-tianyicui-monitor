@@ -1,0 +1,20 @@
+# --- never publish: local machine material ---
+
+# Root CA of this machine's local TLS-intercepting proxy. Extracted at runtime
+# from the live chain into build/certs/ by build/setup-ca.sh. Committing a
+# private root CA would be a real leak (and is useless to anyone else anyway).
+build/certs/
+
+# Working clones of upstream repos used to derive data/
+build/dsh-git/
+build/scan/cache.json
+
+# Machine-specific profile sync targets
+sync.local.sh
+
+# --- build noise ---
+node_modules/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
