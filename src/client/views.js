@@ -81,6 +81,16 @@ const LABELS_ZH = {
   contribPrivate: '私有活跃',
   contribPublic: '有公开提交',
   contribPrivateOnly: '有贡献但无公开提交',
+  modelTimeline: 'DeepSeek 模型发布',
+  modelLaunch: '模型发布',
+  dshRelease: 'DSH 发版',
+  models: '个模型',
+  modelNearest: '最近 DSH 发版',
+  modelNote: '模型发布日期取 Hugging Face 模型卡创建时间。仅作时间线参考 —— '
+    + '窗口内模型发布太少，不足以作为预测变量，因此不参与概率计算。',
+  modelObserve: (n, lag) => `DSH 首个版本之后的 ${n} 次旗舰模型发布，紧随其后的 DSH 发版间隔为 ${lag} 天。`
+    + '样本仅 3 次，是模式而非可测量的效应；不构成「模型发布导致 DSH 发版」的因果证据。',
+  modelLegacy: (n) => `更早的 ${n} 次模型发布发生在 DSH 首个公开版本之前，无法与发版节奏对照。`,
   contribExplain: 'GitHub 贡献图统计的是「贡献」（commit + PR + issue + review），不是提交数；'
     + '该账号开启了「在个人主页显示私有贡献」，所以这些数字已包含私有仓库的活动。'
     + 'GitHub 只返回数量，不返回是哪个仓库，因此这一行不能和提交数相加。',
@@ -109,6 +119,16 @@ const LABELS_EN = {
   contribPrivate: 'private activity',
   contribPublic: 'has public commits',
   contribPrivateOnly: 'contributions but no public commit',
+  modelTimeline: 'DeepSeek model releases',
+  modelLaunch: 'model launch',
+  dshRelease: 'DSH release',
+  models: 'models',
+  modelNearest: 'nearest DSH release',
+  modelNote: 'Model dates come from Hugging Face model-card creation time. Timeline context only — '
+    + 'too few model launches fall inside the window to be a predictor, so they do not enter the probability.',
+  modelObserve: (n, lag) => `Each of the ${n} flagship launches after DSH's first release was followed by a DSH release within ${lag} days. `
+    + 'With only 3 observations that is a pattern, not a measurable effect, and it is not evidence that a model launch causes a DSH release.',
+  modelLegacy: (n) => `The earlier ${n} launches predate DSH's first public release, so they cannot be compared against its cadence.`,
   contribExplain: 'GitHub\'s contribution graph counts "contributions" (commits + pull requests + issues + code reviews), not commits. '
     + 'This account has "include private contributions on my profile" enabled, so these daily numbers already fold in private work. '
     + 'GitHub returns only the count, never the repository, so this row must not be added to the commit totals.',
@@ -1268,5 +1288,153 @@ export function ContributionStrip(props) {
         `${c.firstDay} → ${c.lastDay} · ${c.days} ${p.locale === 'en' ? 'days' : '天'} · Σ ${c.total.toLocaleString()}`),
     ),
     h('div', { style: { fontSize: 9, lineHeight: 1.6, color: colorOf(p.theme, 'labelTertiary'), marginTop: 3 } }, L.contribExplain),
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * ModelTimeline — DeepSeek model launches alongside DSH releases
+ *
+ * Context, not a predictor. It shows how the two cadences line up: often the
+ * model ships and the DSH version that supports it follows within days.
+ * ------------------------------------------------------------------ */
+
+/**
+ * @param {{models:Array, dshReleases:Array, theme:object, locale?:string, wide?:boolean}} props
+ */
+export function ModelTimeline(props) {
+  const p = props || {};
+  const theme = p.theme;
+  const L = labelsOf(p);
+  const wide = !!p.wide;
+  const models = (Array.isArray(p.models) ? p.models : []).filter((m) => m && m.flagship);
+  const dsh = (Array.isArray(p.dshReleases) ? p.dshReleases : []).filter((r) => r && typeof r.time === 'number');
+  if (!models.length) return null;
+
+  const DAY = 864e5;
+  const t0 = Math.min(...models.map((m) => m.time));
+  const t1 = Math.max(
+    ...models.map((m) => m.time),
+    ...dsh.map((r) => r.time),
+  );
+  const span = Math.max(DAY, t1 - t0);
+
+  // for each model, the nearest DSH release and how many days after it landed
+  const rows = models.map((m) => {
+    let best = null;
+    for (const r of dsh) {
+      const d = (r.time - m.time) / DAY;
+      if (!best || Math.abs(d) < Math.abs(best.days)) best = { version: r.version, days: d };
+    }
+    return { ...m, nearest: best };
+  });
+
+  const width = wide ? 720 : 380;
+  const height = 66;
+  const pad = { top: 22, right: 8, bottom: 16, left: 8 };
+  const plotW = width - pad.left - pad.right;
+  const xAt = (t) => pad.left + ((t - t0) / span) * plotW;
+
+  const children = [];
+  children.push(h('line', {
+    key: 'axis',
+    x1: pad.left, x2: pad.left + plotW, y1: height - pad.bottom, y2: height - pad.bottom,
+    stroke: colorOf(theme, 'border'), strokeWidth: 1,
+  }));
+
+  // DSH releases as small ticks under the axis, for cadence comparison
+  dsh.forEach((r, i) => {
+    const x = xAt(r.time);
+    if (x < pad.left || x > pad.left + plotW) return;
+    children.push(h('line', {
+      key: `dsh-${i}`,
+      x1: x, x2: x, y1: height - pad.bottom, y2: height - pad.bottom + 5,
+      stroke: colorOf(theme, 'labelTertiary'), strokeWidth: 1, opacity: 0.7,
+    }));
+  });
+
+  // model launches as diamonds above the axis, labelled
+  models.forEach((m, i) => {
+    const x = xAt(m.time);
+    const y = pad.top + 8;
+    children.push(h('path', {
+      key: `m-${i}`,
+      d: `M ${x} ${y - 5} L ${x + 5} ${y} L ${x} ${y + 5} L ${x - 5} ${y} Z`,
+      fill: colorOf(theme, 'accent'),
+      stroke: colorOf(theme, 'bg2', '#fff'),
+      strokeWidth: 1,
+    }, h('title', { key: 't' },
+      `${m.day} · ${m.name}` +
+      (m.nearest ? ` · ${L.modelNearest} ${m.nearest.version} ${m.nearest.days >= 0 ? '+' : ''}${m.nearest.days.toFixed(1)}d` : ''))));
+    children.push(h('line', {
+      key: `ml-${i}`,
+      x1: x, x2: x, y1: y + 5, y2: height - pad.bottom,
+      stroke: colorOf(theme, 'accent'), strokeWidth: 1, strokeDasharray: '2 2', opacity: 0.5,
+    }));
+    // stagger labels so adjacent launches do not collide
+    children.push(h('text', {
+      key: `mt-${i}`,
+      x, y: y - 9 - (i % 2) * 9, textAnchor: 'middle', fontSize: 8,
+      fill: colorOf(theme, 'labelSecondary'), fontFamily: fontOf(theme),
+    }, m.name.replace(/^DeepSeek-/, '')));
+  });
+
+  children.push(h('text', {
+    key: 'from', x: pad.left, y: height - 3, fontSize: 8,
+    fill: colorOf(theme, 'labelTertiary'), fontFamily: fontOf(theme),
+  }, models[0].day));
+  children.push(h('text', {
+    key: 'to', x: pad.left + plotW, y: height - 3, textAnchor: 'end', fontSize: 8,
+    fill: colorOf(theme, 'labelTertiary'), fontFamily: fontOf(theme),
+  }, new Date(t1).toISOString().slice(0, 10)));
+
+  // Observation, clearly labelled as non-causal: among launches that happened after
+  // DSH started publishing, how long until the next DSH release?
+  const firstDsh = dsh.length ? Math.min(...dsh.map((r) => r.time)) : null;
+  const launcherAfter = firstDsh == null ? [] : models.filter((m) => m.time >= firstDsh);
+  const legacyCount = models.length - launcherAfter.length;
+  let observation = null;
+  if (launcherAfter.length) {
+    const lags = launcherAfter.map((m) => {
+      const after = dsh.filter((r) => r.time >= m.time).sort((a, b) => a.time - b.time);
+      return after.length ? (after[0].time - m.time) / DAY : null;
+    }).filter((v) => v != null);
+    if (lags.length) {
+      const maxLag = Math.max(...lags);
+      observation = L.modelObserve(lags.length, maxLag.toFixed(1));
+    }
+  }
+
+  const swatch = (color, label, diamond) => h('span', {
+    key: label, style: { display: 'inline-flex', alignItems: 'center', gap: 4 },
+  },
+    diamond
+      ? h('span', { style: { width: 7, height: 7, background: color, transform: 'rotate(45deg)', display: 'inline-block' } })
+      : h('span', { style: { width: 2, height: 9, background: color, display: 'inline-block' } }),
+    h('span', null, label));
+
+  return h('div', { style: { display: 'flex', flexDirection: 'column', fontFamily: fontOf(theme) } },
+    h('svg', {
+      viewBox: `0 0 ${width} ${height}`,
+      width: '100%', height,
+      role: 'img',
+      'aria-label': `${L.modelTimeline}: ${models.length} launches`,
+      style: { display: 'block', maxWidth: '100%', height: 'auto' },
+    }, children),
+    h('div', {
+      style: {
+        display: 'flex', flexWrap: 'wrap', gap: '4px 12px', marginTop: 2,
+        fontSize: 9, color: colorOf(theme, 'labelTertiary'),
+      },
+    },
+      swatch(colorOf(theme, 'accent'), L.modelLaunch, true),
+      swatch(colorOf(theme, 'labelTertiary'), L.dshRelease, false),
+      h('span', { key: 'n', style: { marginLeft: 'auto' } }, `${models.length} ${L.models}`)),
+    h('div', { style: { fontSize: 9, lineHeight: 1.6, color: colorOf(theme, 'labelTertiary'), marginTop: 2 } }, L.modelNote),
+    observation
+      ? h('div', { style: { fontSize: 9, lineHeight: 1.6, color: colorOf(theme, 'labelSecondary'), marginTop: 3 } }, observation)
+      : null,
+    legacyCount > 0
+      ? h('div', { style: { fontSize: 9, lineHeight: 1.6, color: colorOf(theme, 'labelTertiary'), marginTop: 2 } }, L.modelLegacy(legacyCount))
+      : null,
   );
 }

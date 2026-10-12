@@ -1,0 +1,155 @@
+{
+ "generatedAt": 1791805610800,
+ "source": "https://huggingface.co/api/models?author=deepseek-ai (createdAt)",
+ "org": "deepseek-ai",
+ "scopeNote": "Only models published since the DSH repository was created. Adapters, distills, quantisations and base checkpoints are included but flagged flagship:false.",
+ "since": "2026-06-10",
+ "total": 18,
+ "flagshipCount": 6,
+ "releases": [
+  {
+   "name": "DeepSeek-V4-Flash-DSpark",
+   "id": "deepseek-ai/DeepSeek-V4-Flash-DSpark",
+   "time": 1782527256000,
+   "day": "2026-06-27",
+   "flagship": true,
+   "downloads": 330260
+  },
+  {
+   "name": "DeepSeek-V4-Pro-DSpark",
+   "id": "deepseek-ai/DeepSeek-V4-Pro-DSpark",
+   "time": 1782529376000,
+   "day": "2026-06-27",
+   "flagship": true,
+   "downloads": 3758
+  },
+  {
+   "name": "dspark_qwen3_4b_block7",
+   "id": "deepseek-ai/dspark_qwen3_4b_block7",
+   "time": 1782646156000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 5522
+  },
+  {
+   "name": "dspark_qwen3_8b_block7",
+   "id": "deepseek-ai/dspark_qwen3_8b_block7",
+   "time": 1782649448000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 9587
+  },
+  {
+   "name": "dspark_qwen3_14b_block7",
+   "id": "deepseek-ai/dspark_qwen3_14b_block7",
+   "time": 1782649533000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 10777
+  },
+  {
+   "name": "dspark_gemma4_12b_block7",
+   "id": "deepseek-ai/dspark_gemma4_12b_block7",
+   "time": 1782649656000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 1715
+  },
+  {
+   "name": "dflash_qwen3_4b_block7",
+   "id": "deepseek-ai/dflash_qwen3_4b_block7",
+   "time": 1782649752000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 1233
+  },
+  {
+   "name": "dflash_qwen3_8b_block7",
+   "id": "deepseek-ai/dflash_qwen3_8b_block7",
+   "time": 1782649807000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 575
+  },
+  {
+   "name": "dflash_qwen3_14b_block7",
+   "id": "deepseek-ai/dflash_qwen3_14b_block7",
+   "time": 1782649890000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 630
+  },
+  {
+   "name": "dflash_gemma4_12b_block7",
+   "id": "deepseek-ai/dflash_gemma4_12b_block7",
+   "time": 1782650004000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 480
+  },
+  {
+   "name": "eagle3_qwen3_4b_ttt7",
+   "id": "deepseek-ai/eagle3_qwen3_4b_ttt7",
+   "time": 1782650099000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 561
+  },
+  {
+   "name": "eagle3_qwen3_8b_ttt7",
+   "id": "deepseek-ai/eagle3_qwen3_8b_ttt7",
+   "time": 1782650129000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 566
+  },
+  {
+   "name": "eagle3_qwen3_14b_ttt7",
+   "id": "deepseek-ai/eagle3_qwen3_14b_ttt7",
+   "time": 1782650180000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 407
+  },
+  {
+   "name": "eagle3_gemma4_12b_ttt7",
+   "id": "deepseek-ai/eagle3_gemma4_12b_ttt7",
+   "time": 1782650237000,
+   "day": "2026-06-28",
+   "flagship": false,
+   "downloads": 616
+  },
+  {
+   "name": "DeepSeek-V4-Flash-0731",
+   "id": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "time": 1785483024000,
+   "day": "2026-07-31",
+   "flagship": true,
+   "downloads": 4446916
+  },
+  {
+   "name": "DeepSeek-V4-Pro-0813",
+   "id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "time": 1786590306000,
+   "day": "2026-08-13",
+   "flagship": true,
+   "downloads": 79857
+  },
+  {
+   "name": "DeepSeek-V4-Flash-Vision-Exp",
+   "id": "deepseek-ai/DeepSeek-V4-Flash-Vision-Exp",
+   "time": 1788156978000,
+   "day": "2026-08-31",
+   "flagship": true,
+   "downloads": 601869
+  },
+  {
+   "name": "DeepSeek-V4.1-Flash",
+   "id": "deepseek-ai/DeepSeek-V4.1-Flash",
+   "time": 1789006678000,
+   "day": "2026-09-10",
+   "flagship": true,
+   "downloads": 1294550
+  }
+ ]
+}

@@ -33,7 +33,8 @@
     "test": "node --test test/*.test.mjs",
     "data": "python3 build/extract_dataset.py && node build/fit_model.mjs 72 && node build/bundle.mjs",
     "contributions": "NODE_EXTRA_CA_CERTS=$PWD/build/certs/chain1.pem node build/scan_contributions.mjs",
-    "repos": "node build/scan_repos.mjs"
+    "repos": "node build/scan_repos.mjs",
+    "models": "NODE_EXTRA_CA_CERTS=$PWD/build/certs/chain1.pem node build/fetch_models.mjs"
   },
   "license": "MIT"
 }

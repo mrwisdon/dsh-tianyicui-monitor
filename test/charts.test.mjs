@@ -583,13 +583,15 @@ test('views.js parses and exports the frozen components', () => {
   const names = [...src.matchAll(/export\s+function\s+([A-Za-z0-9_$]+)/g)].map((m) => m[1]);
   for (const want of [
     'LineChart', 'Heatmap', 'ProbabilityGauge', 'StatRow', 'EvidenceTable',
-    'IconMonitor', 'DayDetail', 'MonitorCharts',
+    'IconMonitor', 'DayDetail', 'MonitorCharts', 'ContributionStrip', 'ModelTimeline',
   ]) {
     assert.ok(names.includes(want), `views.js must export ${want}`);
   }
-  assert.deepEqual(
-    [...new Set([...src.matchAll(/from\s*['"]([^'"]+)['"]/g)].map((m) => m[1]))].sort(),
-    ['./charts.js', './classify.js', 'react'],
-  );
+  // Only real import statements: a bare `/from ['"]/` also matches object keys
+  // like `from:` followed by a string.
+  const imports = [...new Set(
+    [...src.matchAll(/^\s*import\b[\s\S]*?from\s*['"]([^'"]+)['"]/gm)].map((m) => m[1]),
+  )].sort();
+  assert.deepEqual(imports, ['./charts.js', './classify.js', 'react']);
   assert.ok(!/from\s*['"][^'"]*\.css['"]/.test(src), 'no external CSS');
 });

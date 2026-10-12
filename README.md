@@ -22,6 +22,7 @@ A row in the DSH sidebar, next to Plugins / MCP, opening a report:
 - **Totals** — commits in the main repo, commits across all public repos, GitHub contribution count
 - **Timeline** — daily commits with release markers
 - **Heatmap** — GitHub-style contribution grid
+- **Model timeline** — DeepSeek model launches against DSH releases
 - **Contributions** — daily GitHub contribution counts, private-activity days flagged
 - **Evidence** — Brier / AUC / calibration error, and the hazard bucket behind the current number
 
@@ -103,6 +104,26 @@ the time (Wilson 95% CI 90.2–94.6%).
 
 > **Limitation:** the history contains only 37 independent release events, so the intervals are
 > wide. The panel states this in its footer. Do not make important decisions from it.
+
+## DeepSeek model releases
+
+Model launches are shown as timeline context, **not** as a model input. Scoped to models published
+since the DSH repository was created — including **V4-Flash-0731** and **V4-Pro-0813** — with dates
+taken from Hugging Face model-card creation time.
+
+Notable alignment: each of the three flagship launches *after* DSH's first public release was
+followed by a DSH release within **0.5 days**.
+
+| Model launch | Next DSH release |
+|---|---|
+| 2026-08-13 · V4-Pro-0813 | +0.2 d |
+| 2026-08-31 · V4-Flash-Vision-Exp | +0.4 d |
+| 2026-09-10 · V4.1-Flash | +0.5 d |
+
+> With only three observations this is a pattern, not a measurable effect, and it is not evidence
+> that a model launch *causes* a DSH release. The three earlier launches predate DSH's first release
+> and cannot be compared at all. They are deliberately kept out of the probability model, both
+> because n=3 cannot support a predictor and because the base rate already explains most of it.
 
 ## Install
 

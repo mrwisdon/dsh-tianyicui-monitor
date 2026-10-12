@@ -17,10 +17,11 @@ import snapshotJson from '../../data/snapshot.json';
 import modelJson from '../../data/model_final.json';
 import repoScan from '../../data/repos.json';
 import contributions from '../../data/contributions.json';
+import modelReleases from '../../data/models.json';
 import { buildDailySeries, heatmapMatrix } from '../analytics.js';
 import { refitFromDaily, predictWith, HORIZON_HOURS, LIKELY_THRESHOLD } from '../model.js';
 import { refresh as refreshUpstream } from '../github.js';
-import { ProbabilityGauge, StatRow, EvidenceTable, IconMonitor, MonitorCharts, ContributionStrip } from './views.js';
+import { ProbabilityGauge, StatRow, EvidenceTable, IconMonitor, MonitorCharts, ContributionStrip, ModelTimeline } from './views.js';
 import { classifyProbability } from './classify.js';
 
 export const NS = 'tianyicui-monitor';
@@ -270,6 +271,11 @@ export function buildViewModel(sources, nowMs, locale = 'zh') {
         privateActiveRecent: privateActiveDays.filter((k) => k >= '2026-10-10').length,
       };
     })(),
+    // DeepSeek model launches, shown as timeline context only — they are not a
+    // model input (too few fall inside the window to support one).
+    modelReleases: (modelReleases && Array.isArray(modelReleases.releases))
+      ? modelReleases.releases
+      : [],
     liveState: sources.liveState,
     live: sources.live,
     locale,
@@ -559,6 +565,17 @@ export function renderReport(vm, live, state, opts = {}) {
     React.createElement('div', { style: sectionTitle }, L.totals),
     React.createElement(StatRow, { items: statItems, theme: THEME }),
     charts,
+    vm.modelReleases && vm.modelReleases.some((m) => m.flagship) ? React.createElement(React.Fragment, null,
+      React.createElement('div', { style: sectionTitle }, L.modelTimeline),
+      React.createElement(ModelTimeline, {
+        models: vm.modelReleases,
+        dshReleases: vm.releases,
+        theme: THEME,
+        locale: vm.locale,
+        wide,
+      }),
+    ) : null,
+
     vm.contributions ? React.createElement(React.Fragment, null,
       React.createElement('div', { style: sectionTitle }, `${L.contribStat} · ${L.contribNote}`),
       React.createElement(ContributionStrip, {

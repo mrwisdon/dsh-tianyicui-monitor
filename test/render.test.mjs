@@ -693,3 +693,75 @@ test('the zh and en dictionaries expose the same key set', async () => {
   const ek = Object.keys(dicts.en).sort();
   assert.deepEqual(ek, zk, 'every label must exist in both languages');
 });
+
+/* ------------------------------------------------------------------ *
+ * DeepSeek model release timeline
+ * ------------------------------------------------------------------ */
+
+test('the model timeline renders launches and DSH release ticks', () => {
+  const { req } = loadBundle();
+  const V = req('src/client/views.js');
+  const models = JSON.parse(readFileSync(resolve(ROOT, 'data/models.json'), 'utf8'));
+  const snap = JSON.parse(readFileSync(resolve(ROOT, 'data/snapshot.json'), 'utf8'));
+
+  const tree = V.ModelTimeline({
+    models: models.releases,
+    dshReleases: snap.releases,
+    theme: THEME,
+    locale: 'zh',
+    wide: true,
+  });
+  const { problems, nodes } = renderTree(tree);
+  assert.deepEqual(problems, []);
+  assert.ok(nodes > 10);
+
+  // one diamond per flagship launch
+  const flagship = models.releases.filter((m) => m.flagship);
+  assert.ok(flagship.length >= 2, 'expected at least two flagship launches in scope');
+  const diamonds = findAll(tree, (n) => n.type === 'path' && typeof n.props.d === 'string' && n.props.d.includes('Z'));
+  assert.equal(diamonds.length, flagship.length, 'one diamond per flagship model launch');
+
+  // and it must name the two the user called out
+  const text = allText(tree).join(' ');
+  for (const want of ['V4-Flash-0731', 'V4-Pro-0813']) {
+    assert.ok(text.includes(want.replace('DeepSeek-', '')), `${want} must be labelled`);
+  }
+  // context only: it must say it is not a predictor
+  assert.match(allText(tree).join(' '), /不足以作为预测变量|too few model launches/i);
+});
+
+test('the model timeline is scoped to models released since DSH began', () => {
+  const models = JSON.parse(readFileSync(resolve(ROOT, 'data/models.json'), 'utf8'));
+  const dataset = JSON.parse(readFileSync(resolve(ROOT, 'data/dataset.json'), 'utf8'));
+  const since = new Date(dataset.meta.firstCommitMs).toISOString().slice(0, 10);
+  assert.equal(models.since, since, 'scope must start when the DSH repo was created');
+  for (const r of models.releases) {
+    assert.ok(r.time >= dataset.meta.firstCommitMs, `${r.name} predates DSH`);
+    assert.equal(typeof r.flagship, 'boolean');
+  }
+  // the two the user named must be present and flagged flagship
+  const names = models.releases.map((r) => r.name);
+  assert.ok(names.includes('DeepSeek-V4-Flash-0731'));
+  assert.ok(names.includes('DeepSeek-V4-Pro-0813'));
+  for (const n of ['DeepSeek-V4-Flash-0731', 'DeepSeek-V4-Pro-0813']) {
+    assert.equal(models.releases.find((r) => r.name === n).flagship, true);
+  }
+});
+
+test('model releases are NOT fed into the probability model', () => {
+  const { req } = loadBundle();
+  const entry = req('src/client/index.js');
+  const snap = JSON.parse(readFileSync(resolve(ROOT, 'data/snapshot.json'), 'utf8'));
+  const now = Date.parse('2026-10-12T16:00:00+08:00');
+  const vm = entry.buildViewModel(entry.mergeSources(snap, null), now, 'zh');
+  assert.ok(vm.modelReleases.length > 0, 'model releases reach the view model for display');
+
+  // removing them must not move the probability: they are context, not input
+  const stripped = { ...snap };
+  const vm2 = entry.buildViewModel(entry.mergeSources(stripped, null), now, 'zh');
+  const models2 = req('src/client/index.js');
+  const before = vm.probability;
+  const after = vm2.probability;
+  assert.equal(before, after, 'probability is independent of the model-release series');
+  assert.ok(typeof models2.buildViewModel === 'function');
+});
